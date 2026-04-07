@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Home, Bricks, Warehouse, Building2, Trees } from 'lucide-react';
+import { Home, BrickWall, Factory, Building2, Trees } from 'lucide-react';
 
 interface GoalAnimationProps {
   progress: number;
@@ -19,8 +19,8 @@ export function HouseAnimation({ progress }: GoalAnimationProps) {
         className="text-blue-400"
       >
         {step === 0 && <Trees size={32} className="opacity-40" />}
-        {step === 1 && <Bricks size={32} className="opacity-60" />}
-        {step === 2 && <Warehouse size={32} className="opacity-80" />}
+        {step === 1 && <BrickWall size={32} className="opacity-60" />}
+        {step === 2 && <Factory size={32} className="opacity-80" />}
         {step === 3 && <Building2 size={32} />}
         {step >= 4 && <Home size={32} className="text-green-400 drop-shadow-[0_0_8px_rgba(74,222,128,0.5)]" />}
       </motion.div>

@@ -120,7 +120,7 @@ export default function InvestmentPanel() {
                      <YAxis hide />
                      <Tooltip 
                         contentStyle={{ backgroundColor: '#18181b', border: '1px solid #ffffff10', borderRadius: '12px' }}
-                        formatter={(val: number) => `₹${val.toLocaleString()}`}
+                        formatter={(val: unknown) => `₹${typeof val === 'number' ? val.toLocaleString() : val}`}
                      />
                      <Bar dataKey="value" fill="#3b82f6" radius={[6, 6, 0, 0]} barSize={40}>
                         {investments.projections.map((entry: any, index: number) => (
