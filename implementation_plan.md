@@ -40,8 +40,9 @@ The chat bot is no longer just a placeholder. When asked about "budget" or "goal
 
 ### Phase 5: Deployment
 1. [x] **Deployment Guide**: Created detailed production rollout plan.
-2. [ ] **PostgreSQL Migration**: Move from SQLite to a managed database like Supabase or Neon.
-3. [ ] **Vercel/Render Hosting**: Deploy the live app to production endpoints.
+2. [x] **Docker Integration**: Added Dockerfiles and Docker Compose for easy deployment.
+3. [ ] **PostgreSQL Migration**: Move from SQLite to a managed database like Supabase or Neon.
+4. [ ] **Vercel/Render Hosting**: Deploy the live app to production endpoints.
 
 ---
 > [!TIP]

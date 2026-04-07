@@ -39,7 +39,7 @@ export default function AnimatedGoal({ goal }: AnimatedGoalProps) {
   }
 
   return (
-    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 flex items-center gap-5 relative overflow-hidden group">
+    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 flex flex-col sm:flex-row items-center sm:items-start lg:items-center gap-5 relative overflow-hidden group">
       {/* Background Progress Fill */}
       <motion.div 
         className={`absolute left-0 top-0 bottom-0 opacity-[0.03] w-full bg-gradient-to-r ${ThemeColor} z-0`}

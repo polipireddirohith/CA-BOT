@@ -1,12 +1,18 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Query, File, UploadFile
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
+from typing import List, Optional
+import os
 
-from app.core.database import SessionLocal, engine, Base
+from app.core.database import SessionLocal, engine, Base, get_db
 from app.models.all import User, Transaction, Goal
 from app.schemas.all import UserCreate, User as UserSchema, TransactionCreate, Transaction as TransactionSchema, GoalCreate, Goal as GoalSchema, ChatRequest, ChatResponse, BudgetAllocation, InvestmentProfile
 from app.services.budgeting import calculate_budget
 from app.services.investments import calculate_investments
+from app.services.textract import textract_service
+from app.services.tax import tax_advisor
+
+
 
 Base.metadata.create_all(bind=engine)
 
@@ -25,12 +31,39 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+@app.get("/api/tax-advice")
+def get_tax_advice(db: Session = Depends(get_db)):
+    # Simple advice for now; we could base it on salary
+    advice = tax_advisor.analyze_document_and_suggest("", "general")
+    return {"advice": advice}
+
+@app.post("/api/upload")
+async def upload_document(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    """Uploads a payslip or bill and extracts information."""
+    contents = await file.read()
+    
+    # Try extracting text
+    extracted_text = textract_service.extract_text_from_bytes(contents)
+    
+    if "Error" in extracted_text:
+        # Mock mode if AWS keys are missing
+        if os.getenv("AWS_ACCESS_KEY_ID") is None:
+             # Just return a helpful mock response if no keys exist for easy dev
+             return {
+                 "filename": file.filename,
+                 "analysis": ["Mock Analysis: We found some potential ₹50,000 savings in 80C!", "Consider submitting your house rent receipts."],
+                 "extracted": "Sample data: Salary 50000, Needs Rent 15000, Entertainment 5000"
+             }
+        raise HTTPException(status_code=500, detail=extracted_text)
+        
+    analysis = tax_advisor.analyze_document_and_suggest(extracted_text, "payslip")
+    
+    return {
+        "filename": file.filename,
+        "analysis": analysis,
+        "extracted": extracted_text[:500] + "..." # Limit large text
+    }
+
 
 # Mock user for simplicity (In a real app, use JWT Auth)
 CURRENT_USER_ID = 1
